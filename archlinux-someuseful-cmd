@@ -1,0 +1,8 @@
+// connect wifi from cmd
+nmcli dev wifi connect <SSID> password <password>
+
+// chown
+chown [-R] user.group <file | directory>
+
+// chmod
+chmod [rwx] <file | directory>
