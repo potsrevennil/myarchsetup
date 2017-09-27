@@ -1,0 +1,90 @@
+mkfs.ext4 <partition>
+mount <root_partition> /mnt
+mount <home_partition> /mnt/home
+mount <boot_partition> /mnt/boot
+
+edit /etc/pacman.d/mirrorlist
+dhcpcd <interface>
+
+pacstrap -i /mnt base base-devel
+genfstab -U -p /mnt >> /mnt/etc/fstab
+
+arch-chroot /mnt
+
+echo LANG=en_US.UTF-8 > /etc/locale.conf
+export LANG=en_US.UTF-8
+
+ln -s /usr/share/zoneinfo/Asia/Taipei /etc/localtime
+hwclock --systohc --utc
+
+echo <hostname> > /etc/hostname
+edit /etc/hosts
+
+passwd
+
+pacman -S grub efibootmgr
+grub-install --target=x86_64-efi --efi-directory =/boot --bootloader-id=grub --recheck
+grub-mkconfig -o /boot/grub/grub.cfg
+
+exit
+reboot
+
+// install GUI
+
+pacman -Syu
+pacman -S bash-completion
+
+pacman -S xorg-werver xorg-xinit xorg-apps mes xorg-twm xterm xorg-xclock
+pacman -S xf86-input-synaptics
+// get video card
+pacman -Ss | grep xf86-video
+pacman -S xf86-video-[TAB]
+
+startx		// should work
+exit
+
+pacman -S cinnamon nemo-fileroller gdm
+systemctl enable gdm
+systemctl start gdm
+
+pacman -S net-tools
+ifconfig
+pacman -S networkmanager network-manager-applet
+systemctl stop dhcpcd@<interface>.service
+systemctl disable dhcpcd@<interface>.service
+systemctl stop dhcpcd.service
+systemctl disable dhcpcd.service
+systemctl start NetworkManager
+systemctl enable NetworkManager
+--------------------------------------------------------------
+// adduser
+useradd -m -G wheel -s /bin/bash <username>
+passwd <username>
+pacman -S sudo
+
+// Modify /etc/sudoers
+EDITOR=vim visudo
+    USER_NAME   ALL=(ALL) ALL
+
+// install yaourt
+// add the below lines at the bottom of /etc/pacman.conf
+[archlinuxcn]
+SigLevel = Never
+Server = http://repo.archlinuxcn.org/$arch
+
+// grub dual system
+// add the following to /etc/grub.d/40_custom or /boot/grub/custom.cfg
+if [ "${grub_platform}" == "efi" ]; then
+	menuentry "Microsoft Windows Vista/7/8/8.1 UEFI-GPT" {
+		insmod part_gpt
+		insmod fat
+		insmod search_fs_uuid
+		insmod chain
+		search --fs-uuid --set=root $hints_string $fs_uuid
+		chainloader /EFI/Microsoft/Boot/bootmgfw.efi
+	}
+fi
+// get fs_uuid
+sudo grub-probe --target=fs_uuid /boot/EFI/Microsoft/Boot/bootmgfw.efi
+// get hints_string
+sudo grub-probe --target=hints_string /boot/EFI/Microsoft/Boot/bootmgfw.efi
