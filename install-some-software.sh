@@ -26,6 +26,6 @@ sudo pacman -S gnome-terminal
 sudo pacman -S screenshot
 gsettings set org.gnome.gnome-screenshot auto-save-directory "file:///home/$USER/Pictures/ScreenShots"
 
-sudo pacman -S mplayer okular
+sudo pacman -S mplayer okular p7zip
 
 
