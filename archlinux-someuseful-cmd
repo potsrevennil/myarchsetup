@@ -6,3 +6,18 @@ chown [-R] user.group <file | directory>
 
 // chmod
 chmod [rwx] <file | directory>
+
+
+// listen to systemd logging system
+// Follow new messages
+journalctl -f
+
+// Show all messages since 20 minutes ago
+journalctl --since "20 min ago"
+
+// Show all messages from date 
+journalctl --since="2012-10-30 18:17:16"
+
+// Show cache information
+lstopo
+getconf -a | grep CACH
