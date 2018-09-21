@@ -15,9 +15,12 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'tpope/vim-fugitive'                       
 Plug 'Shougo/neocomplete.vim'
 " shell script
-Plug 'vim-scripts/bash-support.vim'
+Plug 'WolfgangMehner/bash-support'
+Plug 'fatih/vim-go'
 
+Plug 'majutsushi/tagbar'
 
+Plug 'FStarLang/VimFStar', {'for': 'fstar'}
 
 
 call plug#end()
@@ -36,14 +39,19 @@ let g:neocomplete#enable_at_startup = 1
 
 " set color theme
 syntax on
-set background=dark
-set termguicolors
+set foldmethod=manual
+colorscheme potts_modified
+
+" set background=dark
+" hi Folded ctermbg=black
 
 " Set indent
 set tabstop=4
 set expandtab
 set shiftwidth=4
 set shiftround
+set autoindent
+
 
 " Set NERDTree
 " Add spaces after comment delimiters by default
@@ -69,6 +77,9 @@ let g:nerdtree_tabs_synchronize_view    = 1
 let g:nerdtree_tabs_synchronize_view    = 1
 let g:nerdtree_tabs_smart_startup_focus = 1
 
+set autochdir
+set tags=tags;
+
 " Set Vim-tags
 " <leader> -> '\'
 nnoremap <leader>tg :TagsGenerate!<CR>
@@ -80,8 +91,23 @@ let g:vim_tags_ignore_file_comment_pattern = '^[#"]'
 let g:vim_tags_directories = [".git", ".hg", ".svn", ".bzr", "_darcs", "CVS"]
 let g:vim_tags_main_file = 'tags'
 let g:vim_tags_extension = '.tags'
+"
+map <leader>] <C-]>
+let g:auto_ctags = 1
+let g:auto_ctags_directory_list = ['.git', '.svn']
+let g:auto_ctags_tags_name = 'tags'
+let g:auto_ctags_tags_args = '--tag-relative --recurse --sort=yes'
+let g:auto_ctags_filetype_mode = 1
+
+nmap <F8> :TagbarToggle<CR>
+
+
 
 " Vim-airline configuration
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#left_sep = ' '
 let g:airline#extensions#tabline#left_alt_sep = '|'
+
+" bash-support
+filetype on
+filetype plugin on
